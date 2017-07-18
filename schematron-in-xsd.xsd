@@ -9,9 +9,15 @@
   
   <attribute name="queryBinding">
     <simpleType>
-      <enumeration value="xslt1"/>
-      <enumeration value="xslt2-basic"/>
-      <enumeration value="xslt2-sa"/>
+      <list>
+        <simpleType>
+          <restriction base="string">
+            <enumeration value="xslt1"/>
+            <enumeration value="xslt2"/>
+            <enumeration value="xslt2-sa"/>
+          </restriction>
+        </simpleType>
+      </list>
     </simpleType>
   </attribute>
   
