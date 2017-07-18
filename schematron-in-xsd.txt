@@ -1,8 +1,8 @@
 Embedding Schematron in XML Schema Documents
 
-Version 1.0alpha4
+Version 4.0alpha5
 
-March 16, 2016
+July 19, 2017
 
 NIEM Technical Architecture Committee (NTAC)
 
@@ -12,7 +12,7 @@ Authors
 
 Abstract
 
-   The Embedding Schematron in XML Schema Documents specification, version 1.0alpha4, provides methods that simplify the use of Schematron with XML Schema documents.
+   The Embedding Schematron in XML Schema Documents specification, version 4.0alpha5, provides methods that simplify the use of Schematron with XML Schema documents.
 
 Document Status
 
@@ -24,27 +24,27 @@ Table of Contents
 
 1. Introduction
 
-   The Embedding Schematron in XML Schema Documents specification, version 1.0alpha4, provides methods that simplify the use of Schematron with XML Schema documents. The following sections describe the objectives and methods of this specficiation.
+   The Embedding Schematron in XML Schema Documents specification, version 4.0alpha5, provides methods that simplify the use of Schematron with XML Schema documents. The following sections describe the objectives and methods of this specification.
 
 1.1. Background
 
    [Schematron] does not specify any methods or provide recommendations for the use of Schematron XML Schema within XML Schema. It provides Annex F, Use of Schematron as a Vocabulary, which identifies Schematron elements that are fit to be used within other vocabularies.
 
-   Prior to this specfication, Schematron rules have been embedded in XML Schema documents by putting sch:ns, sch:title, sch:phase, and sch:pattern elements within xs:appinfo in XML Schema documents. This is supported by the XSLT "ExtractSchFromXSD-2.xsl", which is part of the "iso-schematron-xslt2.zip" distribution provided at http://www.schematron.com/implementation.html. That XSLT processes embedded Schematron into a separate Schematron file with an "xslt2" query binding.
+   Prior to this specification, Schematron rules have been embedded in XML Schema documents by putting sch:ns, sch:title, sch:phase, and sch:pattern elements within xs:appinfo in XML Schema documents. This is supported by the XSLT transform "ExtractSchFromXSD-2.xsl", which is part of the "iso-schematron-xslt2.zip" distribution provided at http://www.schematron.com/implementation.html. That XSLT transform processes embedded Schematron into a separate Schematron file with an "xslt2" query binding.
 
 1.2. Methodology
 
-   This specification defines a methodology for adding Schematron rules to an XML Schema document, and specifies how those rules are to be interpreted. Goals include:
+   This specification defines a methodology for adding Schematron rules to an XML Schema document and specifies how those rules are to be interpreted. Goals include:
 
       *  Simplify the use of Schematron in XML Schema by avoiding Schematron-specific namespace declarations, and allowing bare sch:assert rules, with context identified by the XML Schema components on which they are defined.
 
-      *  Allow for rules to be executed using a variety of XSLT processors, and to clarify which XSLT processors can handle Schematron rules.
+      *  Allow for rules to be executed using a variety of XSLT processors, and clarify which XSLT processors can handle Schematron rules.
 
-      *  Ensure that rules can be used within a variety of XML Schema document sets, by ensuring that rule contexts accomodate rules on types, attributes, and derived schema components (i.e., derived types and elements using element substitution).
+      *  Ensure that rules can be used within a variety of XML Schema document sets by ensuring that rule contexts accommodate rules on types, attributes, and derived schema components (i.e., derived types and elements using element substitution).
 
-   Schemas that conform to this specification include Schematron rules on XML Schema components within xs:appinfo. Those rules are extracted to Schematron files. Those Schematron files may target an XSLT 1 processor, XSLT 2 [basic XSLT processor], or XSLT 2 [schema-aware XSLT processor]. Those Schematron files can also be made portable, to run with over those components regardless of how they are used within a schema. For example, a rule on a complex type can be applied to any element of that complex type.
+   Schemas that conform to this specification include Schematron rules on XML Schema components within xs:appinfo. Those rules are extracted to Schematron files. Those Schematron files may target an XSLT 1 processor, a [basic XSLT 2.0 processor], or a [schema-aware XSLT 2.0 processor]. Those Schematron files can also be made portable, to apply to XML Schema components regardless of how they are used within a schema. For example, a rule on a complex type can be applied to any element of that complex type.
 
-   This specification establishes processing requirements by establishing characteristics of an [implied Schematron document], which is a Schematron document that results from correct processing of a [schema document with embedded Schematron]. Rather than specifying details of exactly how to process a schema document with embedded Schematron, it provides high-level requirements. For example, a sch:assert on an element declaration is required to correspond to a sch:pattern with an sch:rule with a context that applies to any instance of the specified element, and to any element in the substitution group of that element. How this is accomplished might differ between a Schematron document targeted to an XSLT 1 processor and one targeted to an XSLT 2 [schema-aware XSLT processor].
+   This specification establishes processing requirements by establishing characteristics of an [implied Schematron document], which is a Schematron document that results from correct processing of a [schema document with embedded Schematron]. Rather than specifying details of exactly how to process a schema document with embedded Schematron, it provides high-level requirements. For example, a sch:assert on an element declaration is required to correspond to a sch:pattern with an sch:rule with a context that applies to any instance of the specified element, and to any element in the substitution group of that element. How this is accomplished might differ between a Schematron document targeted to an XSLT 1 processor and one targeted to an XSLT 2 [schema-aware XSLT 2.0 processor].
 
 1.3. Objectives
 
@@ -52,7 +52,7 @@ Table of Contents
 
 1.3.1. Clarify processing requirements
 
-   This specification refines the query binding construct defined by [Schematron], to make it clarify what kind of XSLT processor is needed to process Schematron rules within an XML Schema document.
+   This specification refines the query binding construct defined by [Schematron], to clarify what kind of XSLT processor is needed to process Schematron rules within an XML Schema document.
 
    [Schematron] Section 6.4, Query Language Binding, provides a query language binding, which identifies the language used by sch:assert test attributes, sch:value-of select attributes, and other queries on data. It provides a list of recommended names for query languages, however:
 
@@ -62,45 +62,45 @@ Table of Contents
 
       *  It does not distinguish between the capability of xslt and xpath, or between xpath2 and xslt2.
 
-      *  It does not distinguish between XSLT 2.0's [basic XSLT processor] and [schema-aware XSLT processor].
+      *  It does not distinguish between a [basic XSLT 2.0 processor] and a [schema-aware XSLT 2.0 processor].
 
    These shortcomings mean that it is difficult for a Schematron processor to know if it will be able to execute a set of Schematron rules with a given XSLT processor.
 
-   This specification provides an attribute, six:queryBinding, which tells which XSLT processors that are capable of executing the Schematron rules within the schema document. The attribute has a list of values:
+   This specification provides an attribute, six:queryBinding, which identifies what class of XSLT processors are capable of executing the Schematron rules within the schema document. The attribute has a list of values:
 
       *  xslt1: the rules may be executed by an XSLT 1 processor.
 
-      *  xslt2: the rules may be excuted by an XSLT 2 [basic XSLT processor] or a [schema-aware XSLT processor].
+      *  xslt2: the rules may be executed by a [basic XSLT 2.0 processor] or a [schema-aware XSLT 2.0 processor].
 
-      *  xslt2-sa: the rules may be excuted by an XSLT 2 [schema-aware XSLT processor].
+      *  xslt2-sa: the rules may be executed by a [schema-aware XSLT 2.0 processor].
 
-   The example in Figure 1-1, Example of six:queryBinding specifying XSLT 2, below, indicates that embedded Schematron rules would run on any XSLT 2 processor: a [basic XSLT processor] or an XSLT 2 [schema-aware XSLT processor].
+   The example in Figure 1-1, Example of six:queryBinding specifying XSLT 2, below, indicates that embedded Schematron rules would run on any XSLT 2 processor: a [basic XSLT 2.0 processor] or a [schema-aware XSLT 2.0 processor].
 
    Figure 1-1: Example of six:queryBinding specifying XSLT 2
 
       <xs:schema
           six:queryBinding="xslt2"
-          xmlns:six="http://release.niem.gov/niem/sch-in-xsd/1.0/">
+          xmlns:six="http://release.niem.gov/niem/schematron-in-xsd/4.0/">
         ...
       </xs:schema>
 
-   The example in Figure 1-2, Example of six:queryBinding specifying XSLT 1 and XSLT 2, below, indicates that embedded Schematron rules would run on an XSLT 1 processor, an XSLT 2 [basic XSLT processor] or an XSLT 2 [schema-aware XSLT processor].
+   The example in Figure 1-2, Example of six:queryBinding specifying XSLT 1 and XSLT 2, below, indicates that embedded Schematron rules would run on an XSLT 1 processor, a [basic XSLT 2.0 processor] or a [schema-aware XSLT 2.0 processor].
 
    Figure 1-2: Example of six:queryBinding specifying XSLT 1 and XSLT 2
 
       <xs:schema
           six:queryBinding="xslt1 xslt2"
-          xmlns:six="http://release.niem.gov/niem/sch-in-xsd/1.0/">
+          xmlns:six="http://release.niem.gov/niem/schematron-in-xsd/4.0/">
         ...
       </xs:schema>
 
-   The example in Figure 1-3, Example of six:queryBinding specifying a schema-aware XSLT processor, below, indicates that embedded Schematron rules would run on an XSLT 2 [schema-aware XSLT processor].
+   The example in Figure 1-3, Example of six:queryBinding specifying a schema-aware XSLT processor, below, indicates that embedded Schematron rules would run on a [schema-aware XSLT 2.0 processor].
 
    Figure 1-3: Example of six:queryBinding specifying a schema-aware XSLT processor
 
       <xs:schema
           six:queryBinding="xslt2-sa"
-          xmlns:six="http://release.niem.gov/niem/sch-in-xsd/1.0/">
+          xmlns:six="http://release.niem.gov/niem/schematron-in-xsd/4.0/">
         ...
       </xs:schema>
 
@@ -108,11 +108,11 @@ Table of Contents
 
       *  It narrows the options down to fielded XSLT processors: XSLT 1 and XSLT 2 processors.
 
-      *  It distinguishes between XSLT 2.0's [basic XSLT processor] and its [schema-aware XSLT processor].
+      *  It distinguishes between a [basic XSLT 2.0 processor] and a [schema-aware XSLT 2.0 processor].
 
       *  It supports Schematron rules that can be executed with both an XSLT 1 and an XSLT 2 processor.
 
-1.3.2. Unify XML Schema document namespace declarations with Schematron's
+1.3.2. Unify XML namespace declarations with Schematron's
 
    This specification simplifies namespace declarations used in embedded Schematron statements, because it ensures the XML prefixes defined and used in XML Schema documents are also used for Schematron rules.
 
@@ -137,21 +137,13 @@ Table of Contents
 
    This specification ensures that the standard XML method of specifying namespace prefixes propagates to embedded Schematron rules. It does this by requiring that namespace declarations appear only on the schema document's document element. This ensures that the document does not define namespace prefixes elsewhere in the document, which can't be represented in a Schematron document.
 
-   Figure 1-5: Example of XML namespaces
-
-      <xs:schema
-         xmlns:sch="http://purl.oclc.org/dsdl/schematron"
-         xmlns:xs="http://www.w3.org/2001/XMLSchema">
-        ...
-      </xs:schema>
-
-1.3.3. Provide for bare asserts, reports, and let
+1.3.3. Provide for bare Schematron assert, report and let in XML Schema documents
 
    This specification provides for bare sch:let, sch:assert, and sch:report as [application information] on some schema components, which greatly simplifies the use of Schematron in XML Schema documents.
 
    The conventional use of Schematron in XML Schema documents consists of putting sch:pattern elements in xs:appinfo annotations. Suppose this is in the nc namespace:
 
-   Figure 1-6: Example of sch:pattern in an element declaration
+   Figure 1-5: Example of sch:pattern in an element declaration
 
       <xs:element name="PersonFullName" type="nc:PersonNameTextType">
         <xs:annotation>
@@ -168,15 +160,15 @@ Table of Contents
 
    This example has issues:
 
-      *  Although the rule is attached to element nc:PersonFullName, it describes a chracteristic of element nc:PersonName. The context of the rule is not what one would expect, and removing this component from a subset would remove a rule unrelated to the component. It is best to make a rule apply to the component on which it is attached.
+      *  Although the rule is attached to element nc:PersonFullName, it describes a characteristic of element nc:PersonName. The context of the rule is not what one would expect, and removing this component from a subset would remove a rule unrelated to the component. It is best to make a rule apply to the component on which it is attached.
 
       *  Since the context is explicit (instead of coming from a schema component definition), changing the name of the component would cause the rule to not apply, instead of having the rule apply to the renamed component.
 
-      *  Since the rule's context is nc:PersonName, it would not apply to elements derived from that element via substitutionGroup. It is best to stay true to the Liskov Substitution Principel, and ensure that rules for a component also hold for derived components.
+      *  Since the rule's context is nc:PersonName, it would not apply to elements derived from that element via substitutionGroup. It is best to stay true to the Liskov Substitution Principle, and ensure that rules for a component also hold for derived components.
 
    This specification allows the use of sch:pattern as shown above, but it also allows a schema component to have sch:assert, sch:report, and sch:let without sch:pattern and sch:rule. For example:
 
-   Figure 1-7: Example of sch:pattern in xs:appinfo
+   Figure 1-6: Example of sch:pattern in xs:appinfo
 
       <xs:element name="PersonName" type="nc:PersonNameType">
         <xs:annotation>
@@ -193,7 +185,7 @@ Table of Contents
 
       *  Rule contexts don't have to be separately maintained.
 
-      *  Rule contexts can work with an XSLT 1.0 processor, an XSLT 2.0 [basic XSLT processor], or an XSLT 2.0 [schema-aware XSLT processor].
+      *  Rule contexts can work with an XSLT 1.0 processor, a [basic XSLT 2.0 processor], or a [schema-aware XSLT 2.0 processor].
 
       *  Rule contexts can apply to derived components, including elements derived through substitution, and elements of derived types.
 
@@ -209,9 +201,10 @@ Table of Contents
    * Section 2.4, XML Information Set
    * Section 2.5, XML Schema
    * Section 2.6, XSLT 2.0
-   * Section 2.7, Schematron
-   * Section 2.8, NIEM Conformance Target Attribute Specification
-   * Section 2.9, NIEM Naming and Design Rules
+   * Section 2.7, XSLT 3.0
+   * Section 2.8, Schematron
+   * Section 2.9, NIEM Conformance Target Attribute Specification
+   * Section 2.10, NIEM Naming and Design Rules
 
 2.1. RFC 2119 terminology
 
@@ -230,6 +223,22 @@ Table of Contents
 2.3. XML Namespaces
 
    This document uses XML namespaces as defined by [XMLNamespaces] and [XMLNamespacesErrata]
+
+   This document uses the following terms from [XMLNamespaces]:
+
+      *  namespace name as ... and TODO ZZZZZZ
+
+   The following namespace prefixes are used throughout this document. Although these prefixes are used consistently in this document, their appearance here in no way implies that use of these prefixes is a criteria for conformance to this specification.
+
+      *  xs: http://www.w3.org/2001/XMLSchema
+
+      *  sch: http://purl.oclc.org/dsdl/schematron
+
+      *  six: http://release.niem.gov/niem/schematron-in-xsd/4.0/
+
+      *  xsl: http://www.w3.org/1999/XSL/Transform
+
+      *  structures: http://release.niem.gov/niem/structures/3.0/
 
 2.4. XML Information Set
 
@@ -267,76 +276,71 @@ Table of Contents
 
 2.6. XSLT 2.0
 
-   The term basic XSLT processor is defined by [XSLT2] Section 21.1, Basic XSLT Processor, which states:
+   The term basic XSLT 2.0 processor refers to a basic XSLT processor as defined by [XSLT2] Section 21.1, Basic XSLT Processor, which states:
 
       A basic XSLT processor is an XSLT processor that implements all the mandatory requirements of this specification with the exception of certain explicitly-identified constructs related to schema processing.
 
-   The term schema-aware XSLT processor is defined by [XSLT2] Section 21.2, Schema-Aware XSLT Processor, which states:
+   The term schema-aware XSLT 2.0 processor refers to a schema-aware XSLT processor as defined by [XSLT2] Section 21.2, Schema-Aware XSLT Processor, which states:
 
       A schema-aware XSLT processor is an XSLT processor that implements all the mandatory requirements of this specification, including those features that a basic XSLT processor signals as an error.
 
-2.7. Schematron
+2.7. XSLT 3.0
+
+   The term basic XSLT 3.0 processor refers to a basic XSLT processor as defined by [XSLT3] Section 27.1, Basic XSLT Processor, which states:
+
+      A basic XSLT processor is an XSLT processor that implements all the mandatory requirements of this specification with the exception of constructs explicitly associated with an optional feature.
+
+   The term schema-aware XSLT 3.0 processor refers to a schema-aware XSLT processor as defined by [XSLT3] Section 27.2, Schema-Awareness Conformance Feature, which states:
+
+      A schema-aware XSLT processor is an XSLT processor that implements the mandatory requirements of this specification connected with the xsl:import-schema declaration, the [xsl:]validation and [xsl:]type attributes, and the ability to handle input documents whose nodes have type annotations other than xs:untyped and xs:untypedAtomic.
+
+2.8. Schematron
 
    The Schematron specification [Schematron] coins and uses the term "Query Language Binding" to refer to the framework that defines the syntax of queries (e.g., test and select) and the types of the results of queries made by a Schematron file. Relevant sections include Section 6.4, Query Language Binding, and Annex C, Default Query Language Binding.
 
-2.8. NIEM Conformance Target Attribute Specification
+2.9. NIEM Conformance Target Attribute Specification
 
    This specification uses terms from [CTAS], including:
+
+      *  conformance target, as defined by [CTAS] Section 3.1, Conformance Target Defined.
+
+      *  conformance target identifier, as defined by [CTAS] Section 3.1, Conformance Target Defined.
 
       *  conformant document, as defined by [CTAS] Section 3.2, Conformance to this Specification.
 
       *  effective conformance target identifier, as defined by [CTAS] Section 4, Semantics and Use.
 
-2.9. NIEM Naming and Design Rules
+2.10. NIEM Naming and Design Rules
 
    The term application information (of a [schema component]) is defined by [NIEM NDR] Section 10.9, Machine-readable annotations, describing the contents of xs:appinfo annotations on the element that defines a schema component.
 
-3. Namespaces used in this document
+3. Rules
 
-   Namespace prefixes used in this document:
+   This section establishes the normative rules for conformance to this specification. Systems and processes seeking conformance to this specification should ensure that their XML Schema documents conform to the rules for the [schema document with embedded Schematron] [conformance target], and should ensure that validation against embedded Schematron is performed in conformance with the interpretation rules for that conformance target, which are conveyed as an [implied Schematron document], derived from a [schema document with embedded Schematron].
 
-      *  xs: http://www.w3.org/2001/XMLSchema
-
-      *  sch: http://purl.oclc.org/dsdl/schematron
-
-      *  six: http://release.niem.gov/niem/sch-in-xsd/1.0/
-
-      *  xsl: http://www.w3.org/1999/XSL/Transform
-
-      *  structures: http://release.niem.gov/niem/structures/3.0/
-
-   Figure 3-1: Schematron namespaces
-
-      <sch:ns prefix="ct" uri="http://release.niem.gov/niem/conformanceTargets/3.0/"/>
-      <sch:ns prefix="sch" uri="http://purl.oclc.org/dsdl/schematron"/>
-      <sch:ns prefix="six" uri="http://release.niem.gov/niem/sch-in-xsd/1.0/"/>
-      <sch:ns prefix="xsl" uri="http://www.w3.org/1999/XSL/Transform"/>
-
-4. Terms and Definitions
+3.1. Definitions
 
    [Definition: schema document with embedded Schematron]
 
-      Conformance target identifier: "http://reference.niem.gov/niem/specification/sch-in-xsd/1.0/#XSDWithSchematron".
+      A schema document with embedded Schematron is an XML Schema document that uses Schematron annotations in accordance with this specification.
 
-      This conformance target uses the conformance target code "XSD"
+   A schema document with embedded Schematron is a [conformance target] of this specification. It uses the [conformance target identifier] "http://reference.niem.gov/niem/specification/schematron-in-xsd/4.0/#XSDWithSchematron". This conformance target uses the conformance target code "XSD"
 
    [Definition: implied Schematron document]
 
       An implied Schematron document of an [schema document with embedded Schematron] is a Schematron document that is produced by conformant processing of a [schema document with embedded Schematron].
 
-5. Rules
+3.2. XML Schema rules
 
-5.1. XML Schema rules
+Rule 3-1. Document is an XML Schema document
 
-Rule 5-1. Document is an XML Schema document
-
-   [Rule 5-1] (ct-xsd)
+   [Rule 3-1] (ct-xsd)
 
       The document MUST be a [schema document].
 
-Rule 5-2. Document has xs:schema document element
+Rule 3-2. Document has xs:schema document element
 
-   [Rule 5-2] (ct-xsd)
+   [Rule 3-2] (ct-xsd)
 
       <sch:pattern>
         <sch:rule context="/">
@@ -345,9 +349,9 @@ Rule 5-2. Document has xs:schema document element
         </sch:rule>
       </sch:pattern>
 
-Rule 5-3. XML Schema elements do not appear as content of annotations
+Rule 3-3. XML Schema elements do not appear as content of annotations
 
-   [Rule 5-3] (ct-xsd)
+   [Rule 3-3] (ct-xsd)
 
       <sch:pattern>
         <sch:rule context="xs:*">
@@ -356,32 +360,32 @@ Rule 5-3. XML Schema elements do not appear as content of annotations
         </sch:rule>
       </sch:pattern>
 
-5.2. Conformance target rules
+3.3. Conformance target rules
 
-Rule 5-4. Document conforms to Conformance Targets Attribute Specification
+Rule 3-4. Document conforms to Conformance Targets Attribute Specification
 
-   [Rule 5-4] (ct-xsd)
+   [Rule 3-4] (ct-xsd)
 
       The document MUST be a conformant document, as defined by [CTAS].
 
-Rule 5-5. Document has effective conformance target identifier
+Rule 3-5. Document has effective conformance target identifier
 
-   [Rule 5-5] (ct-xsd)
+   [Rule 3-5] (ct-xsd)
 
       <sch:pattern>
         <sch:rule context="/">
           <sch:assert test="some $conformance-target 
                             in tokenize(normalize-space( (//@ct:conformanceTargets)[1] ), ' ')
-                            satisfies $conformance-target = 'http://reference.niem.gov/niem/specification/sch-in-xsd/1.0/#XSDWithSchematron'"
-              >The document MUST have an effective conformance target identifier "http://reference.niem.gov/niem/specification/sch-in-xsd/1.0/#XSDWithSchematron".</sch:assert>
+                            satisfies $conformance-target = 'http://reference.niem.gov/niem/specification/schematron-in-xsd/4.0/#XSDWithSchematron'"
+              >The document MUST have an effective conformance target identifier "http://reference.niem.gov/niem/specification/schematron-in-xsd/4.0/#XSDWithSchematron".</sch:assert>
         </sch:rule>
       </sch:pattern>
 
-5.3. Rules on six:queryBinding
+3.4. Rules on six:queryBinding
 
-Rule 5-6. Attribute six:queryBinding owner element is xs:schema
+Rule 3-6. Attribute six:queryBinding owner element is xs:schema
 
-   [Rule 5-6] (ct-xsd)
+   [Rule 3-6] (ct-xsd)
 
       <sch:pattern>
          <sch:rule context="*[@six:queryBinding]">
@@ -390,9 +394,9 @@ Rule 5-6. Attribute six:queryBinding owner element is xs:schema
          </sch:rule>
       </sch:pattern>
 
-Rule 5-7. Schema element has query binding
+Rule 3-7. Schema element has query binding
 
-   [Rule 5-7] (ct-xsd)
+   [Rule 3-7] (ct-xsd)
 
       <sch:pattern>
          <sch:rule context="/xs:schema">
@@ -401,9 +405,9 @@ Rule 5-7. Schema element has query binding
          </sch:rule>
       </sch:pattern>
 
-Rule 5-8. Attribute six:queryBinding identifies query language
+Rule 3-8. Attribute six:queryBinding identifies query language
 
-   [Rule 5-8] (ct-xsd)
+   [Rule 3-8] (ct-xsd)
 
       <sch:pattern>
         <sch:rule context="*[@six:queryBinding]">
@@ -413,9 +417,9 @@ Rule 5-8. Attribute six:queryBinding identifies query language
         </sch:rule>
       </sch:pattern>
 
-Rule 5-9. Attribute six:queryBinding sets processing expectations
+Rule 3-9. Attribute six:queryBinding sets processing expectations
 
-   [Rule 5-9] (ct-xsd)
+   [Rule 3-9] (ct-xsd)
 
       The application information attribute six:queryBinding on a [schema document with embedded Schematron] contains a list of strings that reflect the processing requirements of Schematron rules appearing within the schema document. The attribute six:queryBinding MUST be interpreted as follows:
 
@@ -427,13 +431,13 @@ Rule 5-9. Attribute six:queryBinding sets processing expectations
 
          *  "xslt2":
 
-            The [implied Schematron document] MAY be processed by either a [basic XSLT processor] or a [schema-aware XSLT processor].
+            The [implied Schematron document] MAY be processed by either a [basic XSLT 2.0 processor] or a [schema-aware XSLT 2.0 processor].
 
             The [implied Schematron document] MUST have an attribute queryBinding on the document element with a value of "xslt2".
 
          *  "xslt2-sa":
 
-            The [implied Schematron document] MAY be processed by a [schema-aware XSLT processor].
+            The [implied Schematron document] MAY be processed by a [schema-aware XSLT 2.0 processor].
 
             The [implied Schematron document] MUST have an attribute queryBinding on the document element with a value of "xslt2".
 
@@ -441,11 +445,11 @@ Rule 5-9. Attribute six:queryBinding sets processing expectations
 
    The "xslt2" query binding implies "xslt2-sa". Including both is redundant, but harmless.
 
-5.4. Rules on namespaces
+3.5. Rules on namespaces
 
-Rule 5-10. Namespace prefixes declared only on the document element
+Rule 3-10. Namespace prefixes declared only on the document element
 
-   [Rule 5-10] (ct-xsd)
+   [Rule 3-10] (ct-xsd)
 
       <sch:pattern>
         <sch:rule context="*[not(self::* is /*)]">
@@ -460,33 +464,38 @@ Rule 5-10. Namespace prefixes declared only on the document element
                             and (every $prefix
                                  in $parent-prefixes
                                  satisfies $prefix = $element-prefixes)"
-              >The document MUST NOT have a namespace prefix definition on any element that is not the document element.</sch:assert>
+              >Within the document MUST NOT have a namespace prefix definition on any element that is not the document element.</sch:assert>
         </sch:rule>
       </sch:pattern>            
 
-Rule 5-11. No use of sch:ns
+Rule 3-11. No use of sch:ns
 
-   [Rule 5-11] (ct-xsd)
+   [Rule 3-11] (ct-xsd)
 
-      A component of a [schema document with embedded Schematron] MUST NOT have [application information] that is an element sch:ns.
+      <sch:pattern>
+        <sch:rule context="xs:appinfo/sch:ns">
+          <sch:assert test="false()"
+            >The schema document MUST NOT contain application information element sch:ns.</sch:assert>
+        </sch:rule>
+      </sch:pattern>            
 
-   All namespace declarations in the implied Schematron document are originated from the namespace declarations appearing on the document element xs:schema.
+   All namespace declarations in the [implied Schematron document] originate from the namespace declarations appearing on the document element xs:schema.
 
-Rule 5-12. Implied Schematron document has sch:ns
+Rule 3-12. Implied Schematron document has sch:ns
 
-   [Rule 5-12] (ct-xsd)
+   [Rule 3-12] (ct-xsd)
 
       The [implied Schematron document] of [schema document with embedded Schematron] $document MUST have a sch:ns element corresponding to each namespace declaration that occurs on the [document element] of $document.
 
-5.5. Schematron throughout the document
+3.6. Schematron throughout the document
 
-Rule 5-13. Implied Schematron document contains application information from document
+Rule 3-13. Implied Schematron document contains application information from document
 
-   [Rule 5-13] (ct-xsd)
+   [Rule 3-13] (ct-xsd)
 
       The [implied Schematron document] of [schema document with embedded Schematron] $document MUST contain, preserving document order, content corresponding to:
 
-         *  element application information of the [document element] xs:schema of $document that has the namespace corresponding to the prefixes "sch" and "xsl",
+         *  element application information of the [document element] xs:schema of $document that has a namespace name corresponding to the prefixes "sch" and "xsl",
 
          *  element [application information] of any element sch:pattern within $document, and
 
@@ -494,11 +503,11 @@ Rule 5-13. Implied Schematron document contains application information from doc
 
    Note that the namespace prefixes "sch" and "xsl" are defined for this document in Section 2.3, XML Namespaces, above.
 
-5.6. Occurrence of Schematron content
+3.7. Occurrence of Schematron content
 
-Rule 5-14. XSLT elements allowed only as top-level annotations
+Rule 3-14. XSLT elements allowed only as top-level annotations
 
-   [Rule 5-14] (ct-xsd)
+   [Rule 3-14] (ct-xsd)
 
       <sch:pattern>
         <sch:rule context="xs:*/xsl:*">
@@ -507,9 +516,9 @@ Rule 5-14. XSLT elements allowed only as top-level annotations
         </sch:rule>
       </sch:pattern>              
 
-Rule 5-15. Most Schematron elements allowed only as top-level annotations
+Rule 3-15. Most Schematron elements allowed only as top-level annotations
 
-   [Rule 5-15] (ct-xsd)
+   [Rule 3-15] (ct-xsd)
 
       <sch:pattern>
         <sch:rule context="xs:*/sch:*[not(self::sch:assert)
@@ -520,9 +529,9 @@ Rule 5-15. Most Schematron elements allowed only as top-level annotations
         </sch:rule>
       </sch:pattern>
 
-Rule 5-16. Schematron assert, report, let allowed on particular components
+Rule 3-16. Schematron assert, report, let allowed on particular components
 
-   [Rule 5-16] (ct-xsd)
+   [Rule 3-16] (ct-xsd)
 
       <sch:pattern>
         <sch:rule context="xs:*/sch:assert
@@ -540,15 +549,15 @@ Rule 5-16. Schematron assert, report, let allowed on particular components
         </sch:rule>
       </sch:pattern>              
 
-Rule 5-17. Application information corresponds to a valid Schematron document
+Rule 3-17. Application information corresponds to a valid Schematron document
 
-   [Rule 5-17] (ct-xsd)
+   [Rule 3-17] (ct-xsd)
 
       The document MUST NOT contain any annotations from the "sch" or "xsl" namespaces that would result in an invalid [implied Schematron document].
 
-Rule 5-18. Schema component definitions have limited Schematron content
+Rule 3-18. Schema component definitions have limited Schematron content
 
-   [Rule 5-18] (ct-xsd)
+   [Rule 3-18] (ct-xsd)
 
       Elements other than xs:schema MUST NOT have [application information] in the "sch" namespace other than:
 
@@ -556,69 +565,69 @@ Rule 5-18. Schema component definitions have limited Schematron content
 
          *  Other XML Schema component-defining elements MAY have specific application information in the namespace corresponding to the prefix "sch" only as explicitly allowed by other rules in this specification.
 
-5.7. Top-level attribute declaration
+3.8. Top-level attribute declaration
 
-Rule 5-19. Schematron application information allowed on top-level attribute declaration
+Rule 3-19. Schematron application information allowed on top-level attribute declaration
 
-   [Rule 5-19] (ct-xsd)
+   [Rule 3-19] (ct-xsd)
 
       An element xs:attribute with [parent] element xs:schema MAY have have application information elements sch:let, sch:assert, and sch:report.
 
-Rule 5-20. Application information of top-level attribute declaration entails pattern
+Rule 3-20. Application information of top-level attribute declaration entails pattern
 
-   [Rule 5-20] (ct-xsd)
+   [Rule 3-20] (ct-xsd)
 
       The content in an [implied Schematron document] corresponding to occurrences of elements sch:let, sch:assert, or sch:report as [application information] of an element xs:attribute with [parent] element xs:schema corresponds to an occurrence of element sch:pattern with [children] containing an element sch:rule, with context that applies to any element with [attributes] containing that attribute. This sch:rule has [children] containing elements that correspond to the elements sch:let, sch:assert, or sch:report, preserving document order.
 
-5.8. Top-level element declaration
+3.9. Top-level element declaration
 
-Rule 5-21. Schematron application information allowed on top-level element declaration
+Rule 3-21. Schematron application information allowed on top-level element declaration
 
-   [Rule 5-21] (ct-xsd)
+   [Rule 3-21] (ct-xsd)
 
       An element xs:element with [parent] element xs:schema MAY have have [application information] elements sch:let, sch:assert, and sch:report.
 
-Rule 5-22. Application information of top-level element declaration entails pattern
+Rule 3-22. Application information of top-level element declaration entails pattern
 
-   [Rule 5-22] (ct-xsd)
+   [Rule 3-22] (ct-xsd)
 
       The content in an [implied Schematron document] corresponding to occurrences of sch:let, sch:assert, or sch:report on an element xs:element with [parent] element xs:schema corresponds to an occurrence of element sch:pattern with child element sch:rule, with context that applies to any occurrence of that element, or an element in the substitution group of that element. This sch:rule has [children] containing elements corresponding to sch:let, sch:assert, and sch:report, preserving document order.
 
-5.9. Top-level complex type definition
+3.10. Top-level complex type definition
 
-Rule 5-23. Schematron application information allowed on top-level complex type definition
+Rule 3-23. Schematron application information allowed on top-level complex type definition
 
-   [Rule 5-23] (ct-xsd)
+   [Rule 3-23] (ct-xsd)
 
       An element xs:complexType with [parent] element xs:schema MAY have have application information elements sch:let, sch:assert, and sch:report.
 
-Rule 5-24. Application information of top-level complex type definition entails pattern
+Rule 3-24. Application information of top-level complex type definition entails pattern
 
-   [Rule 5-24] (ct-xsd)
+   [Rule 3-24] (ct-xsd)
 
       The content in an [implied Schematron document] corresponding to occurrences of sch:let, sch:assert, or sch:report on an element xs:complexType with [parent] element xs:schema corresponds to an occurrence of element sch:pattern with child element sch:rule, with context that applies to any occurrence of an element that is of that type, or is of a type derived from that type. This sch:rule has children of corresponding to sch:let, sch:assert, and sch:report, preserving document order.
 
-5.10. Top-level simple type definition
+3.11. Top-level simple type definition
 
-Rule 5-25. Schematron application information allowed on top-level simple type definition
+Rule 3-25. Schematron application information allowed on top-level simple type definition
 
-   [Rule 5-25] (ct-xsd)
+   [Rule 3-25] (ct-xsd)
 
       An element xs:simpleType with [parent] element xs:schema MAY have have application information elements sch:let, sch:assert, and sch:report.
 
-Rule 5-26. Application information of top-level simple type definition entails patterns
+Rule 3-26. Application information of top-level simple type definition entails patterns
 
-   [Rule 5-26] (ct-xsd)
+   [Rule 3-26] (ct-xsd)
 
       The content in an [implied Schematron document] corresponding to a set of occurrences of sch:let, sch:assert, or sch:report on an element xs:simpleType with [parent] element xs:schema corresponds to zero or more occurrence of element sch:pattern, each with [children] containing element sch:rule, with context that applies to any occurrence of an element that is of that type, or is of a type derived from that type. This sch:rule establishes a variable $six:value that has a value of the instance content that is of the simple type. This sch:rule has subsequent element children of corresponding to the sch:let, sch:assert, and sch:report from the document, preserving document order. 
 
    Simple type definitions are particularly tricky, in that Schematron processors generally do not support rule context on specific simple content; contexts on text nodes or attribute values will yield errors and warnings. For this reason, simple content values need a level of redirection; a separate Schematron sch:pattern may be established for each element of a simple type, each element with simple content of a simple type, or each attribute of a simple type. Each of these is defined as needed; multiple patterns will primarily be needed when schema-aware XSLT is not the target of the generated Schematron document.
 
-5.11. Element use within a complex type
+3.12. Element use within a complex type
 
-Rule 5-27. Schematron application information allowed on element use in a top-level complex type definition
+Rule 3-27. Schematron application information allowed on element use in a top-level complex type definition
 
-   [Rule 5-27] (ct-xsd)
+   [Rule 3-27] (ct-xsd)
 
       An element matching the XPath expression
 
@@ -626,9 +635,9 @@ Rule 5-27. Schematron application information allowed on element use in a top-le
 
       MAY have have application information elements sch:let, sch:assert, and sch:report.
 
-Rule 5-28. Application information of element use in top-level complex type definition entails pattern
+Rule 3-28. Application information of element use in top-level complex type definition entails pattern
 
-   [Rule 5-28] (ct-xsd)
+   [Rule 3-28] (ct-xsd)
 
       Content of a [schema document with embedded Schematron] corresponding to the elements sch:let, sch:assert, and sch:report that are [application information] on an element matching the XPath expression:
 
@@ -636,11 +645,11 @@ Rule 5-28. Application information of element use in top-level complex type defi
 
       has corresponds to an [implied Schematron document] with an occurrence of element sch:pattern with [children] containing element sch:rule with context that applies to any occurrence of the element identified by the ref attribute, or any element that may be substituted for that element, that occurs within any element that has the identified complex type, or a type derived from that complex type. This sch:rule has [children] elements corresponding to sch:let, sch:assert, and sch:report, preserving document order.
 
-5.12. Attribute use within a complex type
+3.13. Attribute use within a complex type
 
-Rule 5-29. Schematron application information allowed on attribute use in top-level complex type definition
+Rule 3-29. Schematron application information allowed on attribute use in top-level complex type definition
 
-   [Rule 5-29] (ct-xsd)
+   [Rule 3-29] (ct-xsd)
 
       An element matching the XPath expression
 
@@ -648,9 +657,9 @@ Rule 5-29. Schematron application information allowed on attribute use in top-le
 
       MAY have have application information elements sch:let, sch:assert, and sch:report.
 
-Rule 5-30. Application information of attribute use in top-level complex type definition entails pattern
+Rule 3-30. Application information of attribute use in top-level complex type definition entails pattern
 
-   [Rule 5-30] (ct-xsd)
+   [Rule 3-30] (ct-xsd)
 
       Within a [schema document with embedded Schematron], elements sch:let, sch:assert, and sch:report that are [application information] on an element matching the XPath expression:
 
@@ -658,9 +667,9 @@ Rule 5-30. Application information of attribute use in top-level complex type de
 
       corresponds to a [implied Schematron document] with an occurrence of element sch:pattern with [children] containing element sch:rule with attribute context that applies to any occurrence of an element that has the identified complex type, or a type derived from that complex type, that owns the attribute identified by the ref attribute. This sch:rule has [children] elements corresponding to elements sch:let, sch:assert, and sch:report, preserving document order.
 
-6. XPath functions usable within XSLT 2.0 Schematron expressions
+4. XPath functions usable within XSLT 2.0 Schematron expressions
 
-6.1. Function six:resolve
+4.1. Function six:resolve
 
    The function six:resolve is designed to resolve NIEM reference elements to their targets, to simplify XPath expressions.
 
@@ -692,7 +701,7 @@ Appendix A. References
 
    [Schematron]: "ISO/IEC STANDARD 19757-3: Information Technology -- Document Schema Definition Languages (DSDL) Part 3: Rule-Based Validation -- Schematron." ISO/IEC, June 1, 2006. http://standards.iso.org/ittf/PubliclyAvailableStandards/c040833_ISO_IEC_19757-3_2006(E).zip.
 
-   [XML]: Bray, Tim, Jean Paoli, C. M. Sperberg-McQueen, Eve Maler, and Franaois Yergeau. "Extensible Markup Language (XML) 1.0 (Fifth Edition)." The World Wide Web Consortium (W3C), November 26, 2008. http://www.w3.org/TR/2008/REC-xml-20081126/.
+   [XML]: Bray, Tim, Jean Paoli, C. M. Sperberg-McQueen, Eve Maler, and Francois Yergeau. "Extensible Markup Language (XML) 1.0 (Fifth Edition)." The World Wide Web Consortium (W3C), November 26, 2008. http://www.w3.org/TR/2008/REC-xml-20081126/.
 
    [XMLInfoSet]: Cowan, John, and Richard Tobin. "XML Information Set (Second Edition)," February 4, 2004. http://www.w3.org/TR/2004/REC-xml-infoset-20040204/.
 
@@ -706,12 +715,14 @@ Appendix A. References
 
    [XSLT2]: Kay, Michael. "XSL Transformations (XSLT) Version 2.0." W3C, January 23, 2007. http://www.w3.org/TR/2007/REC-xslt20-20070123/.
 
+   [XSLT3]: Kay, Michael, ed. "XSL Transformations (XSLT) Version 3.0." W3C, November 19, 2015. http://www.w3.org/TR/2015/CR-xslt-30-20151119/.
+
 Appendix B. Schema document for Schematron in XSD vocabulary (informative)
 
-   This schema document is provided to support the user, but is not considered normative. The syntax of six:queryBinding is provided via Rule 5-8, Attribute six:queryBinding identifies query language.
+   This schema document is provided to support the user, but is not considered normative. The syntax of six:queryBinding is provided via Rule 3-8, Attribute six:queryBinding identifies query language.
 
    <?xml version="1.0" encoding="us-ascii"?>
-   <schema targetNamespace="http://release.niem.gov/niem/sch-in-xsd/1.0/"
+   <schema targetNamespace="http://release.niem.gov/niem/schematron-in-xsd/4.0/"
            xmlns="http://www.w3.org/2001/XMLSchema">
      <annotation>
        <documentation>This is a schema for a vocabulary for use by XML Schema
@@ -738,36 +749,36 @@ Appendix B. Schema document for Schematron in XSD vocabulary (informative)
 
 Appendix C. Index of Rules
 
-   Rule 5-1, Document is an XML Schema document: Section 5.1, XML Schema rules
-   Rule 5-2, Document has xs:schema document element: Section 5.1, XML Schema rules
-   Rule 5-3, XML Schema elements do not appear as content of annotations: Section 5.1, XML Schema rules
-   Rule 5-4, Document conforms to Conformance Targets Attribute Specification: Section 5.2, Conformance target rules
-   Rule 5-5, Document has effective conformance target identifier: Section 5.2, Conformance target rules
-   Rule 5-6, Attribute six:queryBinding owner element is xs:schema: Section 5.3, Rules on six:queryBinding
-   Rule 5-7, Schema element has query binding: Section 5.3, Rules on six:queryBinding
-   Rule 5-8, Attribute six:queryBinding identifies query language: Section 5.3, Rules on six:queryBinding
-   Rule 5-9, Attribute six:queryBinding sets processing expectations: Section 5.3, Rules on six:queryBinding
-   Rule 5-10, Namespace prefixes declared only on the document element: Section 5.4, Rules on namespaces
-   Rule 5-11, No use of sch:ns: Section 5.4, Rules on namespaces
-   Rule 5-12, Implied Schematron document has sch:ns: Section 5.4, Rules on namespaces
-   Rule 5-13, Implied Schematron document contains application information from document: Section 5.5, Schematron throughout the document
-   Rule 5-14, XSLT elements allowed only as top-level annotations: Section 5.6, Occurrence of Schematron content
-   Rule 5-15, Most Schematron elements allowed only as top-level annotations: Section 5.6, Occurrence of Schematron content
-   Rule 5-16, Schematron assert, report, let allowed on particular components: Section 5.6, Occurrence of Schematron content
-   Rule 5-17, Application information corresponds to a valid Schematron document: Section 5.6, Occurrence of Schematron content
-   Rule 5-18, Schema component definitions have limited Schematron content: Section 5.6, Occurrence of Schematron content
-   Rule 5-19, Schematron application information allowed on top-level attribute declaration: Section 5.7, Top-level attribute declaration
-   Rule 5-20, Application information of top-level attribute declaration entails pattern: Section 5.7, Top-level attribute declaration
-   Rule 5-21, Schematron application information allowed on top-level element declaration: Section 5.8, Top-level element declaration
-   Rule 5-22, Application information of top-level element declaration entails pattern: Section 5.8, Top-level element declaration
-   Rule 5-23, Schematron application information allowed on top-level complex type definition: Section 5.9, Top-level complex type definition
-   Rule 5-24, Application information of top-level complex type definition entails pattern: Section 5.9, Top-level complex type definition
-   Rule 5-25, Schematron application information allowed on top-level simple type definition: Section 5.10, Top-level simple type definition
-   Rule 5-26, Application information of top-level simple type definition entails patterns: Section 5.10, Top-level simple type definition
-   Rule 5-27, Schematron application information allowed on element use in a top-level complex type definition: Section 5.11, Element use within a complex type
-   Rule 5-28, Application information of element use in top-level complex type definition entails pattern: Section 5.11, Element use within a complex type
-   Rule 5-29, Schematron application information allowed on attribute use in top-level complex type definition: Section 5.12, Attribute use within a complex type
-   Rule 5-30, Application information of attribute use in top-level complex type definition entails pattern: Section 5.12, Attribute use within a complex type
+   Rule 3-1, Document is an XML Schema document: Section 3.2, XML Schema rules
+   Rule 3-2, Document has xs:schema document element: Section 3.2, XML Schema rules
+   Rule 3-3, XML Schema elements do not appear as content of annotations: Section 3.2, XML Schema rules
+   Rule 3-4, Document conforms to Conformance Targets Attribute Specification: Section 3.3, Conformance target rules
+   Rule 3-5, Document has effective conformance target identifier: Section 3.3, Conformance target rules
+   Rule 3-6, Attribute six:queryBinding owner element is xs:schema: Section 3.4, Rules on six:queryBinding
+   Rule 3-7, Schema element has query binding: Section 3.4, Rules on six:queryBinding
+   Rule 3-8, Attribute six:queryBinding identifies query language: Section 3.4, Rules on six:queryBinding
+   Rule 3-9, Attribute six:queryBinding sets processing expectations: Section 3.4, Rules on six:queryBinding
+   Rule 3-10, Namespace prefixes declared only on the document element: Section 3.5, Rules on namespaces
+   Rule 3-11, No use of sch:ns: Section 3.5, Rules on namespaces
+   Rule 3-12, Implied Schematron document has sch:ns: Section 3.5, Rules on namespaces
+   Rule 3-13, Implied Schematron document contains application information from document: Section 3.6, Schematron throughout the document
+   Rule 3-14, XSLT elements allowed only as top-level annotations: Section 3.7, Occurrence of Schematron content
+   Rule 3-15, Most Schematron elements allowed only as top-level annotations: Section 3.7, Occurrence of Schematron content
+   Rule 3-16, Schematron assert, report, let allowed on particular components: Section 3.7, Occurrence of Schematron content
+   Rule 3-17, Application information corresponds to a valid Schematron document: Section 3.7, Occurrence of Schematron content
+   Rule 3-18, Schema component definitions have limited Schematron content: Section 3.7, Occurrence of Schematron content
+   Rule 3-19, Schematron application information allowed on top-level attribute declaration: Section 3.8, Top-level attribute declaration
+   Rule 3-20, Application information of top-level attribute declaration entails pattern: Section 3.8, Top-level attribute declaration
+   Rule 3-21, Schematron application information allowed on top-level element declaration: Section 3.9, Top-level element declaration
+   Rule 3-22, Application information of top-level element declaration entails pattern: Section 3.9, Top-level element declaration
+   Rule 3-23, Schematron application information allowed on top-level complex type definition: Section 3.10, Top-level complex type definition
+   Rule 3-24, Application information of top-level complex type definition entails pattern: Section 3.10, Top-level complex type definition
+   Rule 3-25, Schematron application information allowed on top-level simple type definition: Section 3.11, Top-level simple type definition
+   Rule 3-26, Application information of top-level simple type definition entails patterns: Section 3.11, Top-level simple type definition
+   Rule 3-27, Schematron application information allowed on element use in a top-level complex type definition: Section 3.12, Element use within a complex type
+   Rule 3-28, Application information of element use in top-level complex type definition entails pattern: Section 3.12, Element use within a complex type
+   Rule 3-29, Schematron application information allowed on attribute use in top-level complex type definition: Section 3.13, Attribute use within a complex type
+   Rule 3-30, Application information of attribute use in top-level complex type definition entails pattern: Section 3.13, Attribute use within a complex type
 
 Appendix D. Index of Definitions
 

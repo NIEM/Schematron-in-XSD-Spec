@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="us-ascii"?>
-<schema targetNamespace="http://release.niem.gov/niem/sch-in-xsd/1.0/"
+<schema targetNamespace="http://release.niem.gov/niem/schematron-in-xsd/4.0/"
         xmlns="http://www.w3.org/2001/XMLSchema">
   <annotation>
     <documentation>This is a schema for a vocabulary for use by XML Schema
