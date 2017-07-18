@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<schema targetNamespace="http://release.niem.gov/niem/sch-in-xsd/1.0/"
+        xmlns="http://www.w3.org/2001/XMLSchema">
+  <annotation>
+    <documentation>This is a schema for a vocabulary for use by XML Schema
+      documents that conform to "Embedding Schematron in XML Schema Documents",
+      version 1.0.</documentation>
+  </annotation>
+  
+  <attribute name="queryBinding">
+    <simpleType>
+      <enumeration value="xslt1"/>
+      <enumeration value="xslt2-basic"/>
+      <enumeration value="xslt2-sa"/>
+    </simpleType>
+  </attribute>
+  
+</schema>
